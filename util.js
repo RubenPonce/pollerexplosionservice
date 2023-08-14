@@ -14,24 +14,27 @@ const xmlToJson = async (xmlString) => {
         return null;
     }
 };
-//test xml to json
-fs.readFile( './pp.xml', 'utf8', async function(err, data) {
-    var json = await xmlToJson(data);
-    console.log("to json ->", json.rss.channel);
-    //console.log(prepareContent(json))
-});
- const prepareContent = (json) => {
-    const items = json.rss.channel[0].item.slice(0, 15); // Assuming the items are here and taking only the latest 15
-    return items.map((item) => ({
+/**
+ * Prepares content from a Rumble RSS feed by mapping the latest 15 items to the required format.
+ *
+ * @param {Object} json - The parsed JSON object representing the RSS feed.
+ * @param {Object} json.rss - The RSS element in the JSON.
+ * @param {Object[]} json.rss.channel - The channel information in the RSS.
+ * @param {Object[]} json.rss.channel[0].item - The items in the RSS feed.
+ * @returns {{title: string, url: string, image: string, date: string}[]} An array of content objects, each containing the title, url, image, and date of the item.
+ */
+const prepareRumbleContent = (json) => {
+    const items = json.rss.channel[0].item.slice(0, 15);
+    return items.map((item, index) => ({
         title: item.title[0],
-        url: item.link[0],
-        image: item.image_url[0], // Adapt based on the actual structure of the feed
+        url: item.guid[0]["_"],
+        image: item["itunes:image"][0].$.href,
         date: item.pubDate[0],
     }));
 };
 
 
  module.exports = {
-    prepareContent,
+    prepareRumbleContent,
     xmlToJson
  }
