@@ -1,4 +1,6 @@
 const {parseStringPromise} = require('xml2js');
+const axios = require("axios");
+const {GET_ALL_CHANNELS} = require("./queries");
 fs = require('fs');
 
 /**
@@ -33,8 +35,44 @@ const prepareRumbleContent = (json) => {
     }));
 };
 
+/**
+ * Executes a GraphQL query using a POST request.
+ * @async
+ * @function
+ * @param {string} query - The GraphQL query string.
+ * @param {object} [variables] - The variables to pass to the query.
+ * @returns {Promise<{data: Array, errors: Array, status: number}>} An object containing the following properties:
+ *   - data: The data returned from the GraphQL query.
+ *   - errors: Any errors that occurred during the query.
+ *   - status: The HTTP status of the response.
+ * @throws Will throw an error if the request fails.
+ * @example
+ * const { data, errors, status } = await useGraphql('{ user { id name } }');
+ */
+const useGraphql = async (query, variables) => {
+    /**
+     * @type {{data: {data: Array, errors: Array, status: number}}}
+     */
+    const {data: {data, errors}, status} = await axios({
+        url: 'http://localhost:4000/graphql',
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: {
+            query,
+            variables,
+        },
+    });
+    if (errors) {
+        console.error(errors)
+    }
+    return {data, errors, status}
+}
 
- module.exports = {
+
+module.exports = {
     prepareRumbleContent,
-    xmlToJson
- }
+    xmlToJson,
+    useGraphql
+}
