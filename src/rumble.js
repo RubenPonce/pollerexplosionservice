@@ -39,45 +39,13 @@ async function updateRumbleChannel(rumbleId, channelId) {
 
     const { errors}=await useGraphql(UPDATE_CHANNEL_CONTENT, variables)
     if (errors) {
+        fs.writeFileSync("errors.json", JSON.stringify(errors))
         console.error(errors, errors[0].message);
     } else{
         console.log("successfully updated")
     }
 }
-const fetchAndUpdateRumbleStaticContent = async () =>{
-    try {
-const {data, errors}=       await useGraphql(GET_ALL_CHANNELS)
 
-        if(errors){
-            console.error(data.errors)
-            return
-        }
-        /**
-         * @type {object[]}
-         */
-        const channels = data.channels;
-        const channelsWithRumbleAccs = channels
-            .filter(channel => channel.socials.some(social => social.name === "Rumble"))
-        //@TODO implement updateChannel for YouTube as well.
-        //@TODO add a link to a channel page for Catcher.tv
-        /*
-         * const youtubeChannelIds = channelsWithYoutubeAccs.map(channel => channel.socials.find(social => social.name === "YouTube").channelId)
-         * for (const channelId of youtubeChannelIds) {
-         *    await updateChannel(channelId);
-         * }
-         */
-        const rumbleChannelIds = channelsWithRumbleAccs.map(channel => ({rumbleId: channel.socials.find(social => social.name === "Rumble").channelId, dbId: channel.channelId}))
-
-        for (const {rumbleId, dbId} of rumbleChannelIds) {
-            await updateRumbleChannel(rumbleId, dbId);
-        }
-        console.log('Data fetched and sent successfully');
-    } catch (error) {
-        console.error('An error occurred while fetching data:', error);
-        console.error("Error with graphql server.")
-    }
-}
 module.exports = {
-    fetchAndUpdateRumbleStaticContent,
-    updateChannel: updateRumbleChannel
+    updateRumbleChannel
 }
