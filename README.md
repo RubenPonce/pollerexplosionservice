@@ -1,4 +1,4 @@
-![what-the-hecking-logo-is-this](https://github.com/RubenPonce/pollerexplosionservice/assets/43939942/fe981480-0ba5-4e1d-874d-38d55e2330cc)
+![what-the-hecking-logo-is-this](https://github.com/RubenPonce/grahql-catcher/assets/43939942/2d4e65cb-c8e9-478b-9583-8c2f2b40870e)
 
 # pollerexplosionservice
 
