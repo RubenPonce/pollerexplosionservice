@@ -34,7 +34,19 @@ const prepareRumbleContent = (json) => {
         date: item.pubDate[0],
     }));
 };
+const prepareYoutubeContent = (json) => {
+    const items = json.feed.entry.slice(0, 15);
+    return items.map((item) => ({
+        title: item.title[0],
+        url: item.link[0].$.href, // Assuming the href is in the first link object
+        image: item['media:group'][0]['media:thumbnail'][0].$.url,
+        date: item.published[0],
+    }));
+}
 
+const prepareOdyseeContent = (json) => {
+
+}
 /**
  * Executes a GraphQL query using a POST request.
  * @async
@@ -65,7 +77,7 @@ const useGraphql = async (query, variables) => {
         },
     });
     if (errors) {
-        console.error(errors)
+        console.error({errors, status});
     }
     return {data, errors, status}
 }
@@ -73,6 +85,8 @@ const useGraphql = async (query, variables) => {
 
 module.exports = {
     prepareRumbleContent,
+    prepareYoutubeContent,
+    prepareOdyseeContent,
     xmlToJson,
     useGraphql
 }

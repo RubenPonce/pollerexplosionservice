@@ -13,5 +13,9 @@ module.exports = {
       }
     }
   }
-  `
+  `,
+  DELETE_SOCIAL: `#graphql
+  mutation deleteSocial($channelId: String!, $socialId: String!) {
+  deleteSocial(channelId: $channelId, socialId: $socialId)
+}`,
 }

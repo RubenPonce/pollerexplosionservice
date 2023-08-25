@@ -1,5 +1,4 @@
-const { updateChannel } = require("./src/rumble");
-const {fetchAndUpdateStaticContent} = require("./src/updateStaticVideoContent");
+const {updateChannel} = require("./src/updateChannel");
 
 const nodeArguments = process.argv.slice(2);
 const runOnce = nodeArguments[0] === '--run-once';
@@ -14,13 +13,10 @@ if (help) {
 
 function singleRun() {
     console.log("running fetchAndUpdateStaticContent once")
-    fetchAndUpdateStaticContent()
+    //fetchAndUpdateStaticContent()
+    updateChannel()
 }
 
-function runForChannel() {
-    console.log("running fetchAndUpdateRumbleStaticContent for channelId: ", channelId)
-    updateChannel(channelId)
-}
 
 if (channelId) {
     runForChannel()
