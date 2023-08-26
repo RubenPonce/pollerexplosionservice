@@ -2,7 +2,8 @@ const {parseStringPromise} = require('xml2js');
 const axios = require("axios");
 const {GET_ALL_CHANNELS} = require("./queries");
 fs = require('fs');
-
+const dotenv = require("dotenv");
+dotenv.config();
 /**
  *
  * @param xmlString {string} - XML string to convert to JSON
@@ -61,6 +62,7 @@ const prepareOdyseeContent = (json) => {
  * @example
  * const { data, errors, status } = await useGraphql('{ user { id name } }');
  */
+
 const useGraphql = async (query, variables) => {
     /**
      * @type {{data: {data: Array, errors: Array, status: number}}}
@@ -70,6 +72,7 @@ const useGraphql = async (query, variables) => {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
+            Authorization : process.env.GRAPHQL_TOKEN
         },
         data: {
             query,

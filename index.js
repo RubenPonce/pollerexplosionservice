@@ -13,16 +13,9 @@ if (help) {
 
 function singleRun() {
     console.log("running fetchAndUpdateStaticContent once")
-    //fetchAndUpdateStaticContent()
     updateChannel()
 }
 
-
-if (channelId) {
-    runForChannel()
-}
 if (runOnce) {
     singleRun()
 }
-// Run fetchData every 10 minutes
-//setInterval(fetchData, 10 * 60 * 1000);
