@@ -1,4 +1,3 @@
-const production = process.env.NODE_ENV === 'production';
 /**
  * @typedef {Object} Content - The content object.
  * @property {string} title - The title of the content
@@ -11,7 +10,12 @@ const production = process.env.NODE_ENV === 'production';
 const rss_constants = {
     Rumble:  "http://localhost:9000/rumble/",
     Youtube: "https://www.youtube.com/feeds/videos.xml?channel_id=",
-    Odyssey: "https://odysee.com/$/rss/channels/@",
+    Odysee: "https://odysee.com/$/rss/@",
+    Types: {
+        Rumble: "Rumble",
+        Youtube: "Youtube",
+        Odyssey: "Odysee",
+    }
 }
 
 module.exports = {

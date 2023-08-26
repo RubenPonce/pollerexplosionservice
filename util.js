@@ -1,9 +1,10 @@
 const {parseStringPromise} = require('xml2js');
 const axios = require("axios");
-const {GET_ALL_CHANNELS} = require("./queries");
 fs = require('fs');
 const dotenv = require("dotenv");
+const _ = require("lodash");
 dotenv.config();
+
 /**
  *
  * @param xmlString {string} - XML string to convert to JSON
@@ -18,36 +19,56 @@ const xmlToJson = async (xmlString) => {
     }
 };
 /**
- * Prepares content from a Rumble RSS feed by mapping the latest 15 items to the required format.
- *
- * @param {Object} json - The parsed JSON object representing the RSS feed.
- * @param {Object} json.rss - The RSS element in the JSON.
- * @param {Object[]} json.rss.channel - The channel information in the RSS.
- * @param {Object[]} json.rss.channel[0].item - The items in the RSS feed.
- * @returns {{title: string, url: string, image: string, date: string}[]} An array of content objects, each containing the title, url, image, and date of the item.
+ * Prepare content fetched from a Rumble JSON feed
+ * @param json
+ * @param socialType
+ * @returns {*}
  */
-const prepareRumbleContent = (json) => {
-    const items = json.rss.channel[0].item.slice(0, 15);
-    return items.map((item, index) => ({
-        title: item.title[0],
-        url: item.guid[0]["_"],
-        image: item["itunes:image"][0].$.href,
-        date: item.pubDate[0],
+const prepareRumbleContent = (json, socialType) => {
+    const items = _.slice(_.get(json, 'rss.channel[0].item'), 0, 15);
+    return _.map(items, (item) => ({
+        title: _.get(item, 'title[0]'),
+        url: _.get(item, 'guid[0]._'),
+        image: _.get(item, 'itunes:image[0].$.href'),
+        date: _.get(item, 'pubDate[0]'),
+        socialType: socialType
     }));
 };
-const prepareYoutubeContent = (json) => {
-    const items = json.feed.entry.slice(0, 15);
+
+/**
+ * Prepare content fetched from a Youtube JSON feed
+ * @param {Object} json - The JSON object containing the Youtube feed
+ * @param {string} socialType - The type of social media (not used here, but included for consistency)
+ * @return {Array} - An array of simplified Youtube content objects
+ */
+const prepareYoutubeContent = (json, socialType) => {
+    const items = _.get(json, 'feed.entry', []).slice(0, 15);
     return items.map((item) => ({
-        title: item.title[0],
-        url: item.link[0].$.href, // Assuming the href is in the first link object
-        image: item['media:group'][0]['media:thumbnail'][0].$.url,
-        date: item.published[0],
+        title: _.get(item, 'title[0]', ''),
+        url: _.get(item, 'link[0].$.href', ''),
+        image: _.get(item, 'media:group[0].media:thumbnail[0].$.url', ''),
+        date: _.get(item, 'published[0]', ''),
+        socialType: socialType
     }));
-}
+};
 
-const prepareOdyseeContent = (json) => {
 
-}
+/**
+ * Prepare content fetched from a Odysee JSON feed
+ * @param json
+ * @param socialType
+ * @returns {*}
+ */
+const prepareOdyseeContent = (json, socialType) => {
+    const items = _.get(json, 'rss.channel[0].item', []).slice(0, 15);
+    return items.map((item) => ({
+        title: _.get(item, 'title[0]', ''),
+        url: _.get(item, 'link[0]', ''),
+        image: _.get(item, 'itunes:image[0].$.href', ''),
+        date: _.get(item, 'pubDate[0]', ''),
+        socialType: socialType
+    }));
+};
 /**
  * Executes a GraphQL query using a POST request.
  * @async

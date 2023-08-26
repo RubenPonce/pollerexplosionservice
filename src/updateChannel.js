@@ -4,14 +4,15 @@ const {rss_constants} = require("./constants");
 const {xmlToJson, prepareRumbleContent, useGraphql, prepareOdyseeContent, prepareYoutubeContent} = require("../util");
 const {UPDATE_CHANNEL_CONTENT, DELETE_SOCIAL} = require("../mutations");
 const {GET_ALL_CHANNELS} = require("../queries");
+
 const prepareContent = (json, socialType) => {
-    if (socialType === "Rumble") {
+    if (socialType === rss_constants.Types.Rumble) {
         return prepareRumbleContent(json);
     }
-    if (socialType === "Youtube") {
+    if (socialType === rss_constants.Types.Youtube) {
         return prepareYoutubeContent(json);
     }
-    if (socialType === "Odyssey") {
+    if (socialType === rss_constants.Types.Odyssey) {
         return prepareOdyseeContent(json);
     }
 
@@ -31,8 +32,8 @@ const fetchContentData = async (socialId, socialType, channelId) => {
         const url = `${rss_constants[socialType]}${socialId}`
         const response = await axios.get(url);
         const json = await xmlToJson(response.data);
-        const content = await prepareContent(json, socialType);
-        return content
+        return await prepareContent(json, socialType);
+
     } catch (error) {
         if (error.response && error.response.status === 404) {
             console.error(`${socialId} of type ${socialType} was banned or deleted.`);
