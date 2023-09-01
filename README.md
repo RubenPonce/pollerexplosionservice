@@ -16,5 +16,5 @@ starts on localhost:4000
 ## Current Features
 - delivers RSS content to the [GraphQL server](https://github.com/RubenPonce/grahql-catcher) which stores that data in MongoDB
 ## Future Features
-- Websocket integration with GraphQL server
+- Polling for live content.(architecture still WIP)
 - Polling of Wordpress content and forum content.
